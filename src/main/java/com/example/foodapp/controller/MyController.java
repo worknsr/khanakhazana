@@ -222,4 +222,17 @@ public class MyController {
             return ResponseEntity.status(ItemNotFoundException.STATUS_CODE).body(e.getMessage());
         }
     }
+
+    // Confirm order
+    @PostMapping(FoodAppConstants.URI_CONFIRM_ORDER)
+    public ResponseEntity<String> confirmOrder(
+            @QueryParam("username") final String username)
+            throws UserNotFoundException, InvalidDataException {
+        try {
+            double total = cartService.confirmOrder(username);
+            return ResponseEntity.ok("Order confirmed successfully! Your total is: "+total);
+        } catch (InvalidDataException e) {
+            return ResponseEntity.status(InvalidDataException.STATUS_CODE).body(e.getMessage());
+        }
+    }
 }

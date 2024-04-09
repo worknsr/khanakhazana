@@ -20,5 +20,6 @@ public final class FoodAppConstants {
     public static final String URI_CART_GET_ITEMS = URI_CART + "/user";
     public static final String URI_CART_UPDATE_PARTICULAR_CART_ITEM = URI_CART + "/update";
     public static final String URI_CART_DELETE_PARTICULAR_ITEM = URI_CART + "/remove";
+    public static final String URI_CONFIRM_ORDER = URI_CART + "/confirm";
     public static final String USERNAME_PATTERN = "^[a-zA-Z0-9_]+$";
 }

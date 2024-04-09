@@ -11,11 +11,9 @@ import com.example.foodapp.exceptions.ItemNotFoundException;
 import com.example.foodapp.exceptions.UserNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -77,6 +75,23 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
         cartDao.delete(cartItem);
     }
+    //CONFIRM ORDER
+    @Override
+    public double confirmOrder(String username) throws InvalidDataException {
+        if (!StringUtils.isNotBlank(username)) {
+            throw new InvalidDataException(InvalidDataException.MESSAGE_INVALID_USERNAME);
+        }
+        List<Cart> cartItemsByUsername = getCartItemsByUsername(username);
+        double total = 0;
+        for (Cart cartItem : cartItemsByUsername) {
+            long itemId = cartItem.getMenu().getItemId();
+            int quantity = cartItem.getQuantity();
+            double price = getItemPriceByItemId(itemId);
+            double subtotal = quantity * price;
+            total += subtotal;
+        }
+        return total;
+    }
 
     private void validateCartParams(String username, long itemId, int quantity) throws InvalidDataException {
         //validate parameters
@@ -86,6 +101,15 @@ public class CartServiceImpl implements CartService {
             throw new InvalidDataException(InvalidDataException.MESSAGE_INVALID_ITEM_ID);
         } else if (quantity==0) {
             throw new InvalidDataException(InvalidDataException.MESSAGE_INVALID_QUANTITY);
+        }
+    }
+
+    public double getItemPriceByItemId(long itemId) {
+        Menu menu = menuDao.findByItemId(itemId);
+        if (menu != null) {
+            return menu.getItemPrice();
+        } else {
+            throw new ItemNotFoundException(itemId);
         }
     }
 }

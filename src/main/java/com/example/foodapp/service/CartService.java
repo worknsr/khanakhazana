@@ -13,5 +13,6 @@ public interface CartService {
     List<Cart> getCartItemsByUsername(String username) throws InvalidDataException;
     void updateCartItemQuantity(String username, long itemId, int quantity) throws InvalidDataException ;
     void removeItemFromCart(String username, long itemId) throws ItemNotFoundException;
+    double confirmOrder(String username) throws InvalidDataException;
 }
 
